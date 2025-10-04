@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -26,7 +28,7 @@ jobs:
       - name: Build tickers
         run: python build_tickers.py
 
-      - name: Update DB
+      - name: Generate DB
         run: python main.py
 
       - name: Configure git user
@@ -34,11 +36,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Checkout DB branch
+      - name: Checkout or create DB branch
         run: |
+          # Se il branch db-updates esiste lo usiamo
           if git rev-parse --verify origin/db-updates; then
+            git fetch origin db-updates
             git checkout db-updates
-            git push origin db-updates
           else
             git checkout --orphan db-updates
             git rm -rf .
@@ -46,8 +49,10 @@ jobs:
             git push origin db-updates
           fi
 
-      - name: Commit and push DB
+      - name: Copy DB to branch
         run: |
+          # Copia il DB generato nel branch db-updates
+          cp ../stocks.db ./stocks.db || echo "DB non trovato"
           git add stocks.db
           git commit -m "Update DB [skip ci]" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git db-updates
