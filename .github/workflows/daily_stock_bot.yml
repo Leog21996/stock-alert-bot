@@ -1,8 +1,8 @@
-name: Update stock DB
+name: Daily Stock Bot
 
 on:
   schedule:
-    - cron: "15 8-21/2 * * *"
+    - cron: "15 8-21/2 * * 1-5"
   workflow_dispatch:
 
 jobs:
@@ -10,43 +10,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Checkout DB branch
-      run: |
-        if git rev-parse --verify origin/db-updates; then
-          git checkout db-updates
-          git pull origin db-updates
-        else
-          git checkout --orphan db-updates
-          git rm -rf .
-          git commit --allow-empty -m "Initialize DB branch"
-          git push origin db-updates
-        fi
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Build tickers
+        run: python build_tickers.py
 
-    - name: Build Tickers
-      run: python build_tickers.py
+      - name: Update DB
+        run: python main.py
 
-    - name: Run main script
-      run: python main.py
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Commit and push DB
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add stocks.db
-        git commit -m "Update DB [skip ci]" || echo "No changes to commit"
-        git push origin db-updates
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout DB branch
+        run: |
+          if git rev-parse --verify origin/db-updates; then
+            git checkout db-updates
+            git pull origin db-updates
+          else
+            git checkout --orphan db-updates
+            git rm -rf .
+            git commit --allow-empty -m "Initialize DB branch"
+            git push origin db-updates
+          fi
+
+      - name: Commit and push DB
+        run: |
+          git add stocks.db
+          git commit -m "Update DB [skip ci]" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git db-updates
