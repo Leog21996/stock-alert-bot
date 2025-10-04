@@ -67,7 +67,7 @@ def get_highs_and_close(ticker):
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT date, high, close FROM prices
+        SELECT date, high, close FROM stock_prices
         WHERE ticker = ?
         ORDER BY date DESC
         """, (ticker,))
