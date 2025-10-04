@@ -27,11 +27,11 @@ NASDAQ_100 = [
     "WBA", "WDAY", "XEL", "XLNX", "ZM"
 ]
 
-FTSE_MIB = [
-    "A2A.MI", "AMPL.MI", "AZM.MI", "BAMI.MI", "BPE.MI", "BPMI.MI", "CNHI.MI", "ENEL.MI",
-    "ENI.MI", "EXO.MI", "FCA.MI", "G.MI", "GFT.MI", "HERA.MI", "ISP.MI", "IT.MI", "LDO.MI",
-    "LUX.MI", "MONC.MI", "MS.MI", "P.MI", "PIRC.MI", "POST.MI", "REC.MI", "S.MI", "SRG.MI",
-    "ST.MI", "STT.MI", "TLIT.MI", "UG.MI", "UCG.MI", "UBI.MI", "UNI.MI", "Z.MI"
+FTSE_MIB = FTSE_MIB = [
+    "A2A.MI", "AMP.MI", "ATL.MI", "AZM.MI", "BCA.MI", "BDM.MI", "BAMI.MI", "BPE.MI",
+    "1CNHI.MI", "ENI.MI", "RACE.MI", "FBK.MI", "HER.MI", "ISP.MI", "IG.MI", "LDO.MI",
+    "MB.MI", "MONC.MI", "NEXI.MI", "PST.MI", "PRY.MI", "REC.MI", "SRG.MI", "STLAM.MI",
+    "TIT.MI", "TRN.MI", "UCG.MI", "UNI.MI", "UIS.MI", "VIN.MI", "ZUC.MI"
 ]
 
 DAX = [
@@ -51,9 +51,11 @@ FTSE_100 = [
 ]
 
 CAC_40 = [
-    "AIR.PA", "AI.PA", "ALU.PA", "AM.PA", "AXA.PA", "BN.PA", "BNP.PA", "BOUY.PA", "CAP.PA", "CS.PA",
-    "DANO.PA", "DSY.PA", "ENGI.PA", "ESSI.PA", "EUF.PA", "KER.PA", "LHN.PA", "LVMH.PA", "MC.PA", "ML.PA",
-    "OR.PA", "PUB.PA", "RMS.PA", "SAF.PA", "SAN.PA", "SGO.PA", "STM.PA", "SU.PA", "SW.PA", "VIE.PA"
+    "AC.PA", "AI.PA", "AIR.PA", "ATO.PA", "BN.PA", "BNP.PA", "CA.PA", "CAP.PA", "CS.PA",
+    "ACA.PA", "EN.PA", "ENGI.PA", "EI.PA", "FR.PA", "RMS.PA", "DG.PA", "KER.PA", "LR.PA",
+    "MC.PA", "ML.PA", "OR.PA", "RI.PA", "PUB.PA", "SGO.PA", "SAN.PA", "SU.PA", "STM.PA",
+    "TEP.PA", "FP.PA", "VIE.PA", "VIV.PA", "CAP.PA", "STLA.PA", "VTO.PA", "HO.PA", "EL.PA", 
+    "MC.PA", "EN.PA", "RNO.PA", "DG.PA"
 ]
 
 def save_tickers(filename="tickers.py"):
