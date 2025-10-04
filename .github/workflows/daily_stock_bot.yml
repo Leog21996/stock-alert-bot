@@ -38,7 +38,7 @@ jobs:
         run: |
           if git rev-parse --verify origin/db-updates; then
             git checkout db-updates
-            git pull origin db-updates
+            git push origin db-updates
           else
             git checkout --orphan db-updates
             git rm -rf .
