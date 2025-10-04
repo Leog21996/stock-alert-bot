@@ -60,4 +60,26 @@ def get_latest_price(ticker:str):
     row = cursor.fetchone()
     conn.close()
     return row
+
+def get_highs_and_close(ticker):
     
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT date, high, close FROM prices
+        WHERE ticker = ?
+        ORDER BY date DESC
+        """, (ticker,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+    
+    if len(rows) < 2:
+        return None, None, None
+    
+    today_close = rows[0][2]
+    yesterday_high = rows[1][1]
+    historical_high = max([row[1] for row in rows[2:]]) if len(rows) > 2 else yesterday_high
+    
+    return yesterday_high, historical_high, today_close
