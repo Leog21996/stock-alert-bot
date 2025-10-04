@@ -36,11 +36,10 @@ jobs:
 
       - name: Checkout DB branch safely
         run: |
-          git reset --hard           # pulisce modifiche locali
-          git clean -fd             # rimuove file non tracciati
+          git fetch origin db-updates
           if git rev-parse --verify origin/db-updates; then
-            git fetch origin db-updates
             git checkout db-updates
+            git reset --hard origin/db-updates
           else
             git checkout --orphan db-updates
             git rm -rf .
