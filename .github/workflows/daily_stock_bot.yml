@@ -23,21 +23,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build tickers (refresh)
+      - name: Build tickers
         run: python build_tickers.py
 
-      - name: Generate DB in temp folder
-        run: python main.py --output tmp/stocks.db
+      - name: Update DB
+        run: python main.py
 
-      - name: Configure git user
+      - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Checkout DB branch safely
+      - name: Checkout or create DB branch
         run: |
-          git fetch origin db-updates
-          if git rev-parse --verify origin/db-updates; then
+          git fetch origin db-updates || true
+          if git show-ref --verify --quiet refs/remotes/origin/db-updates; then
             git checkout db-updates
             git reset --hard origin/db-updates
           else
@@ -47,9 +47,14 @@ jobs:
             git push origin db-updates
           fi
 
-      - name: Copy and commit DB
+      - name: Copy DB
         run: |
-          cp tmp/stocks.db ./stocks.db
+          cp stocks.db stocks.db.tmp
+          git clean -fdx  # Pulisce eventuali file di cache o temporanei
+          mv stocks.db.tmp stocks.db
+
+      - name: Commit and push DB
+        run: |
           git add stocks.db
           git commit -m "Update DB [skip ci]" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git db-updates
